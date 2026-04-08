@@ -1,44 +1,52 @@
 {% set name = "captcha" %}
 {% set version = "0.7.1" %}
 
-
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/captcha-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: a1b462bcc633a64d8db5efa7754548a877c698d98f87716c620a707364cabd6b
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [py<39]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
+    - python
     - pip
-    - python {{ python_min }}
     - setuptools
   run:
+    - python
     - pillow
-    - python >={{ python_min }}
 
 test:
   imports:
     - captcha
-  commands:
-    - pip check
+    - captcha.audio
+    - captcha.image
   requires:
     - pip
-    - python {{ python_min }}
+  commands:
+    - pip check
 
 about:
   home: https://github.com/lepture/captcha
-  summary: A captcha library that generates audio and image CAPTCHAs.
   license: BSD-3-Clause
+  license_family: BSD
   license_file: LICENSE
+  summary: A captcha library that generates audio and image CAPTCHAs.
+  description: |
+    A captcha library that generates audio and image CAPTCHAs.
+    It provides a simple API for generating image CAPTCHAs using Pillow
+    and audio CAPTCHAs from pre-recorded digit samples.
+  doc_url: https://captcha.lepture.com/
+  dev_url: https://github.com/lepture/captcha
 
 extra:
   recipe-maintainers:
     - thewchan
+    - xkong-anaconda
